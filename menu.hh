@@ -1,16 +1,15 @@
 #pragma once
-// #include <unordered_map>
 #include <Nintendo.h>
 
 class Menu {
 private:
     CGamecubeController *controller;
+    CGamecubeConsole *console;
     typedef void (*GC_func)(void);
-    // std::unordered_map<int8_t, GC_func> map;
 
     GC_func map[sizeof(uint8_t)] = {nullptr};
 public:
-    Menu(CGamecubeController *controller);
+    Menu(CGamecubeController *controller, CGamecubeConsole *c2);
     void set_item(uint8_t dpad, uint8_t button, GC_func f);
     void loop();
 
@@ -35,9 +34,10 @@ const int Menu::B = 1 << 1;
 const int Menu::X = 1 << 2;
 const int Menu::Y = 1 << 3;
 
-Menu::Menu(CGamecubeController *c)
+Menu::Menu(CGamecubeController *c, CGamecubeConsole *c2)
 {
     controller = c;
+    console = c2;
 }
 
 void Menu::set_item(uint8_t dpad, uint8_t button, GC_func f)
@@ -58,7 +58,7 @@ void Menu::loop()
     command = dpad << 4 | button;
 
     if (button == 0)
-        return;
+        console.write(controller);
 
     map[command]();
 }
