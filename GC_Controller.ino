@@ -14,7 +14,7 @@ void setup()
     menu.set_item(Menu::dpad_down, Menu::A, mash);
 
     while (!Serial);
-    Serial.begin(115200);
+    Serial.begin(19200);
 
     Serial.println(F("Press any key."));
     while (Serial.read() == -1);
@@ -29,7 +29,6 @@ void loop()
 {
     menu.loop();
 }
-
 
 void mash()
 {
