@@ -58,7 +58,8 @@ void Menu::loop()
     command = dpad << 4 | button;
 
     if (button == 0)
-        console.write(controller);
-
-    map[command]();
+        console->write(*controller);
+    else if (map[command] != nullptr)
+        map[command]();
 }
+
