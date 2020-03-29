@@ -58,21 +58,21 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(){
         re = empty;
         frames++;
         if(frames < 7){
-            re.xAxis = 112.5; // go down
+            re.xAxis = 127; // go down
             re.yAxis = 0; 
             console.write(re);
         }
         
         if(frames == 7){
             re.xAxis = 255; //go right
-            re.yAxis = 112.5;
+            re.yAxis = 127;
             console.write(re); 
         }
 
 
         if(frames == 8){
             re.xAxis = 30; //go left
-            re.yAxis = 112.5;
+            re.yAxis = 127;
             console.write(re);
             frames = 0;
         }

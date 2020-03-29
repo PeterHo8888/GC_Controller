@@ -114,21 +114,21 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(controller &Con
     do {
         frames++;
         if(frames < 7){
-            Controller.report.xAxis = 112.5; // go down
+            Controller.report.xAxis = 127; // go down
             Controller.report.yAxis = 0; 
             Controller.getValues();
         }
         
         if(frames == 7){
             Controller.report.xAxis = 255; //go right
-            Controller.report.yAxis = 112.5;
+            Controller.report.yAxis = 127;
             Controller.getValues(); 
         }
 
 
         if(frames == 8){
             Controller.report.xAxis = 30; //go left
-            Controller.report.yAxis = 112.5;
+            Controller.report.yAxis = 127;
             Controller.getValues();
             frames = 0;
         }
