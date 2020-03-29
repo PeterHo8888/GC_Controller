@@ -57,7 +57,8 @@ void Menu::loop()
 
     command = dpad << 4 | button;
 
-    if (button == 0)
+    // Disable taunts, essentially
+    if (dpad == 0)
         console->write(*controller);
     else if (map[command] != nullptr)
         map[command]();
