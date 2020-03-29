@@ -108,7 +108,6 @@ void mash(controller &Controller)
 // pinpoint the x cooridanate between the absolute value of 25 and 60 to the left
 
 void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(controller &Controller){
-    int x, y;
     int frames = 0;
     float deg = 0;
 

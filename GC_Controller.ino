@@ -11,7 +11,8 @@ void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
 
-    menu.set_item(Menu::dpad_down, Menu::A, mash);
+    menu.set_item(Menu::dpad_up, Menu::A, mash);
+    menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
 
     while (!Serial);
     Serial.begin(19200);
@@ -46,4 +47,38 @@ void mash()
         deg += 0.1; // Quarter-circle every ~16 steps
         digitalWrite(LED_BUILTIN, led = !led);
     } while (!controller.getReport().start);
+}
+
+void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(){
+    int led = 0;
+    int frames = 0;
+    float deg = 0;
+    Gamecube_Report_t re;
+    do {
+        re = empty;
+        frames++;
+        if(frames < 7){
+            re.xAxis = 112.5; // go down
+            re.yAxis = 0; 
+            console.write(re);
+        }
+        
+        if(frames == 7){
+            re.xAxis = 255; //go right
+            re.yAxis = 112.5;
+            console.write(re); 
+        }
+
+
+        if(frames == 8){
+            re.xAxis = 30; //go left
+            re.yAxis = 112.5;
+            console.write(re);
+            frames = 0;
+        }
+
+        digitalWrite(LED_BUILTIN, led = !led);
+
+    } while(!controller.getReport().start);
+
 }
