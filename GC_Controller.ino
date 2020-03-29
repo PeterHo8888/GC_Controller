@@ -38,11 +38,11 @@ void mash()
     float deg = 0;
     Gamecube_Report_t re;
     do {
-        x = 255 * cos(deg);
-        y = 255 * sin(deg);
+        x = 127 * cos(deg) + 127;
+        y = 127 * sin(deg) + 127;
         re = empty;
-        re.x = x;
-        re.y = y;
+        re.xAxis = x;
+        re.yAxis = y;
         console.write(re);
         deg += 0.1; // Quarter-circle every ~16 steps
         digitalWrite(LED_BUILTIN, led = !led);
