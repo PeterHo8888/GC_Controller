@@ -7,11 +7,11 @@ A menu registration system is used for ease of programming and usage.  Normal op
 - Menu registration system
 - Button mashing
 - Walk Cancel Crouch Cancel Teabagging
+- Online taunt
 
 ## TODO
 - SDI
 - Salty rage quit (from [Insert Controller Here](https://www.youtube.com/channel/UC9bCMwS0VhmnVtQE_m92TSg))
 - Teabagging
-- Snake "There!" c4
- 
+- Snake "There!" c4 with radio
 

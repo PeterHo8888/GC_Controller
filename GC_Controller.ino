@@ -15,6 +15,7 @@ void setup()
 
     menu.set_item(Menu::dpad_up, Menu::A, mash);
     menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
+    menu.set_item(Menu::dpad_right, Menu::A, online_taunt);
 
     while (!Serial);
     Serial.begin(115200);
@@ -38,9 +39,9 @@ void change_speed(int x, int y)
 
 void mash()
 {
+    Gamecube_Report_t re;
     int x, y;
     float deg = 0;
-    Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
     do {
         x = 127 * cos(deg) + 127;
@@ -60,9 +61,9 @@ void mash()
 
 void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
 {
+    Gamecube_Report_t re;
     int frames = 0;
     float deg = 0;
-    Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
     do {
         re = empty;
@@ -70,30 +71,54 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
         if(frames < 7) {
             re.xAxis = 127; // go down
             re.yAxis = 0; 
-            console.write(re);
-        }
-        
-        if(frames == 7) {
-            re.xAxis = 255; //go right
+        } else if(frames == 7) {
+            re.xAxis = 230; //go right
             re.yAxis = 127;
-            console.write(re); 
-        }
-
-
-        if(frames == 8) {
+        } else if(frames == 8) {
             re.xAxis = 30; //go left
             re.yAxis = 127;
-            console.write(re);
             frames = 0;
         }
+        console.write(re); 
 
         re = controller.getReport();
         change_speed(re.x, re.y);
         delay(step);
-    } while(!re.start);
+    } while (!re.start);
 
     digitalWrite(LED_BUILTIN, 0);
 }
+
+void online_taunt()
+{
+    Gamecube_Report_t re;
+    int frame = 0;
+    digitalWrite(LED_BUILTIN, 1);
+    do {
+        re.yAxis = 127;
+
+        // Can be 2-5 frames with smoke, 1 without
+        if (frame << 1 == 0)
+            re.xAxis = 0;
+        else if (frame << 1 == 1)
+            re.xAxis = 255;
+
+        console.write(re);
+
+        if (++frame == 4)
+            frame = 0;
+
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while (!re.start);
+
+    digitalWrite(LED_BUILTIN, 0);
+}
+
+
+
+
 
 void write_usb(Gamecube_Report_t *re)
 {
