@@ -102,13 +102,49 @@ void mash(controller &Controller)
     } while (getchar() == '\n');
 }
 
+// steps: 
+// crouch for 6 frames
+// face right for 1 frame
+// pinpoint the x cooridanate between the absolute value of 25 and 60 to the left
+
+void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(controller &Controller){
+    int x, y;
+    int frames = 0;
+    float deg = 0;
+
+    do {
+        frames++;
+        if(frames < 7){
+            Controller.report.xAxis = 112.5; // go down
+            Controller.report.yAxis = 0; 
+            Controller.getValues();
+        }
+        
+        if(frames == 7){
+            Controller.report.xAxis = 255; //go right
+            Controller.report.yAxis = 112.5;
+            Controller.getValues(); 
+        }
+
+
+        if(frames == 8){
+            Controller.report.xAxis = 30; //go left
+            Controller.report.yAxis = 112.5;
+            Controller.getValues();
+            frames = 0;
+        }
+
+    } while(getchar() == '\n');
+
+}
+
 
 int main(){
 
     controller Controller;
 
     cout << "Press enter to advance a frame." << endl;
-    mash(Controller);
+    crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(Controller);
 
     return 0;
 }
