@@ -6,13 +6,12 @@ A menu registration system is used for ease of programming and usage.  Normal op
 ## DONE
 - Menu registration system
 - Button mashing
+- Walk Cancel Crouch Cancel Teabagging
 
 ## TODO
-<ul>
-  <li><b>Walk Cancel Crouch Cancel Teabagging</b></li>
-  <li>SDI</li>
-  <li>Salty rage quit (from [Insert Controller Here](https://www.youtube.com/channel/UC9bCMwS0VhmnVtQE_m92TSg))</li>
-  <li>Teabagging</li>
-  <li>Snake There</li>
-</ul> 
+- SDI
+- Salty rage quit (from [Insert Controller Here](https://www.youtube.com/channel/UC9bCMwS0VhmnVtQE_m92TSg))
+- Teabagging
+- Snake "There!" c4
+ 
 
