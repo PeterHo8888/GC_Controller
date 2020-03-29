@@ -3,9 +3,11 @@
 
 CGamecubeConsole console(8);
 CGamecubeController controller(7);
-Menu menu(&controller);
+Menu menu(&controller, &console);
 
 static const Gamecube_Report_t empty;
+
+static int step = 16;
 
 void setup()
 {
@@ -15,15 +17,10 @@ void setup()
     menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
 
     while (!Serial);
-    Serial.begin(19200);
-
-    Serial.println(F("Press any key."));
-    while (Serial.read() == -1);
-
-    Serial.println(F("Starting"));
-    Serial.println();
+    Serial.begin(115200);
 
     controller.read();
+    mash();
 }
 
 void loop()
@@ -31,12 +28,20 @@ void loop()
     menu.loop();
 }
 
+void change_speed(int x, int y)
+{
+    if (x)
+        step -= 1;
+    if (y)
+        step += 1;
+}
+
 void mash()
 {
     int x, y;
-    int led = 0;
     float deg = 0;
     Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
     do {
         x = 127 * cos(deg) + 127;
         y = 127 * sin(deg) + 127;
@@ -45,40 +50,54 @@ void mash()
         re.yAxis = y;
         console.write(re);
         deg += 0.1; // Quarter-circle every ~16 steps
-        digitalWrite(LED_BUILTIN, led = !led);
-    } while (!controller.getReport().start);
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while (!re.start);
+
+    digitalWrite(LED_BUILTIN, 0);
 }
 
-void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(){
-    int led = 0;
+void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
+{
     int frames = 0;
     float deg = 0;
     Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
     do {
         re = empty;
         frames++;
-        if(frames < 7){
+        if(frames < 7) {
             re.xAxis = 127; // go down
             re.yAxis = 0; 
             console.write(re);
         }
         
-        if(frames == 7){
+        if(frames == 7) {
             re.xAxis = 255; //go right
             re.yAxis = 127;
             console.write(re); 
         }
 
 
-        if(frames == 8){
+        if(frames == 8) {
             re.xAxis = 30; //go left
             re.yAxis = 127;
             console.write(re);
             frames = 0;
         }
 
-        digitalWrite(LED_BUILTIN, led = !led);
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while(!re.start);
 
-    } while(!controller.getReport().start);
-
+    digitalWrite(LED_BUILTIN, 0);
 }
+
+void write_usb(Gamecube_Report_t *re)
+{
+    // abxys000 dLdRdDdUzrl1 jXjYcXcYlr
+    Serial.write((char*)re, 8);
+}
+
