@@ -16,6 +16,10 @@ void setup()
     menu.set_item(Menu::dpad_up, Menu::A, mash);
     menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
     menu.set_item(Menu::dpad_right, Menu::A, online_taunt);
+    menu.set_item(Menu::dpad_down, Menu::B, SDI_Down);
+    menu.set_item(Menu::dpad_left, Menu::B, SDI_Left);
+    menu.set_item(Menu::dpad_right, Menu::B, SDI_Right);
+    menu.set_item(Menu::dpad_up, Menu::B, SDI_Up);
 
     while (!Serial);
     Serial.begin(115200);
@@ -116,8 +120,53 @@ void online_taunt()
     digitalWrite(LED_BUILTIN, 0);
 }
 
+void SDI_Right(){
+    Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
+    do {
+        re.xAxis = 255;
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while(!re.start);
+    digitalWrite(LED_BUILTIN, 0);
+}
 
+void SDI_Left(){
+    Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
+    do {
+        re.xAxis = 0;
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while(!re.start);
+    digitalWrite(LED_BUILTIN, 0);
+}
 
+void SDI_Up(){
+    Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
+    do {
+        re.yAxis = 255;
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while(!re.start);
+    digitalWrite(LED_BUILTIN, 0);
+}
+
+void SDI_Down(){
+    Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
+    do {
+        re.yAxis = 0;
+        re = controller.getReport();
+        change_speed(re.x, re.y);
+        delay(step);
+    } while(!re.start);
+    digitalWrite(LED_BUILTIN, 0);
+}
 
 
 void write_usb(Gamecube_Report_t *re)

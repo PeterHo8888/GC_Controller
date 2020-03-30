@@ -89,7 +89,6 @@ public:
 void mash(controller &Controller)
 {
     int x, y;
-    int led = 0;
     float deg = 0;
     do {
         x = 127 * cos(deg) + 127;
@@ -109,7 +108,6 @@ void mash(controller &Controller)
 
 void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch(controller &Controller){
     int frames = 0;
-    float deg = 0;
 
     do {
         frames++;
