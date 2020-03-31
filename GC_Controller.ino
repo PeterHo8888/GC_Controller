@@ -16,10 +16,7 @@ void setup()
     menu.set_item(Menu::dpad_up, Menu::A, mash);
     menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
     menu.set_item(Menu::dpad_right, Menu::A, online_taunt);
-    menu.set_item(Menu::dpad_down, Menu::B, SDI_Down);
-    menu.set_item(Menu::dpad_left, Menu::B, SDI_Left);
-    menu.set_item(Menu::dpad_right, Menu::B, SDI_Right);
-    menu.set_item(Menu::dpad_up, Menu::B, SDI_Up);
+    menu.set_item(Menu::dpad_left, Menu::A, SDI);
 
     while (!Serial);
     Serial.begin(115200);
@@ -56,7 +53,6 @@ void mash()
         console.write(re);
         deg += 0.1; // Quarter-circle every ~16 steps
         re = controller.getReport();
-        change_speed(re.x, re.y);
         delay(step);
     } while (!re.start);
 
@@ -86,7 +82,6 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
         console.write(re); 
 
         re = controller.getReport();
-        change_speed(re.x, re.y);
         delay(step);
     } while (!re.start);
 
@@ -113,60 +108,29 @@ void online_taunt()
             frame = 0;
 
         re = controller.getReport();
-        change_speed(re.x, re.y);
         delay(step);
     } while (!re.start);
 
     digitalWrite(LED_BUILTIN, 0);
 }
 
-void SDI_Right(){
+void SDI()
+{
+    int frame = 0;
     Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
     do {
-        re.xAxis = 255;
+        if(frame && 1 == 1){
+            re.xAxis = 127;
+            re.yAxis = 127;
+        }
         re = controller.getReport();
-        change_speed(re.x, re.y);
+        frame++;
         delay(step);
     } while(!re.start);
     digitalWrite(LED_BUILTIN, 0);
 }
 
-void SDI_Left(){
-    Gamecube_Report_t re;
-    digitalWrite(LED_BUILTIN, 1);
-    do {
-        re.xAxis = 0;
-        re = controller.getReport();
-        change_speed(re.x, re.y);
-        delay(step);
-    } while(!re.start);
-    digitalWrite(LED_BUILTIN, 0);
-}
-
-void SDI_Up(){
-    Gamecube_Report_t re;
-    digitalWrite(LED_BUILTIN, 1);
-    do {
-        re.yAxis = 255;
-        re = controller.getReport();
-        change_speed(re.x, re.y);
-        delay(step);
-    } while(!re.start);
-    digitalWrite(LED_BUILTIN, 0);
-}
-
-void SDI_Down(){
-    Gamecube_Report_t re;
-    digitalWrite(LED_BUILTIN, 1);
-    do {
-        re.yAxis = 0;
-        re = controller.getReport();
-        change_speed(re.x, re.y);
-        delay(step);
-    } while(!re.start);
-    digitalWrite(LED_BUILTIN, 0);
-}
 
 
 void write_usb(Gamecube_Report_t *re)
