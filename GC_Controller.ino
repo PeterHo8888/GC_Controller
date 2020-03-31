@@ -120,11 +120,12 @@ void SDI()
     Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
     do {
+        re = controller.getReport();
         if(frame && 1 == 1){
             re.xAxis = 127;
             re.yAxis = 127;
         }
-        re = controller.getReport();
+        console.write(re)
         frame++;
         delay(step);
     } while(!re.start);
