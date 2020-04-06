@@ -17,6 +17,7 @@ void setup()
     menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
     menu.set_item(Menu::dpad_right, Menu::A, online_taunt);
     menu.set_item(Menu::dpad_left, Menu::A, SDI);
+    menu.set_item(Menu::dpad_up, Menu::B, salty_rage_quit);
 
     while (!Serial);
     Serial.begin(115200);
@@ -132,6 +133,31 @@ void SDI()
     digitalWrite(LED_BUILTIN, 0);
 }
 
+void salty_rage_quit()
+{
+    Gamecube_Report re;
+    digitalWrite(LED_BUILTIN, 1);
+    re.start = 1;
+    console.write(re);
+    delay(step);
+    re = empty;
+    re.l = 1;
+    re.r = 1;
+    re.a = 1;
+    re.start = 1;
+    console.write(re);
+    delay(step);
+    re = empty;
+    re.xAxis = 255;
+    re.yAxis = 127;
+    console.write(re);
+    delay(step);
+    re = empty;
+    re.a = 1;
+    console.write(re);
+    delay(step);
+    digitalWrite(LED_BUILTIN, 0);
+}
 
 
 void write_usb(Gamecube_Report_t *re)
