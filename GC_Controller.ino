@@ -19,9 +19,13 @@ void setup()
 
     while (!Serial);
     Serial.begin(115200);
+    //while (Serial.read() == -1);
 
-    controller.read();
-    mash();
+    while (!controller.read()) {
+        Serial.println("error reading controller.");
+        delay(20);
+    }
+    Serial.println("Starting");
 }
 
 void loop()
@@ -29,20 +33,12 @@ void loop()
     menu.loop();
 }
 
-void change_speed(int x, int y)
-{
-    if (x)
-        step -= 1;
-    if (y)
-        step += 1;
-}
-
 void mash()
 {
     Gamecube_Report_t re;
     int x, y;
     float deg = 0;
-    digitalWrite(LED_BUILTIN, 1);
+    //digitalWrite(LED_BUILTIN, 1);
     do {
         x = 127 * cos(deg) + 127;
         y = 127 * sin(deg) + 127;
@@ -54,9 +50,9 @@ void mash()
         re = controller.getReport();
         change_speed(re.x, re.y);
         delay(step);
+        digitalWrite(LED_BUILTIN, 0);
     } while (!re.start);
 
-    digitalWrite(LED_BUILTIN, 0);
 }
 
 void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
@@ -64,27 +60,44 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
     Gamecube_Report_t re;
     int frames = 0;
     float deg = 0;
+    
+    const int crouch = 15;
+    const int turn = 3;
     digitalWrite(LED_BUILTIN, 1);
     do {
         re = empty;
+        re.cxAxis = 128;
+        re.cyAxis = 128;
+        
         frames++;
-        if(frames < 7) {
-            re.xAxis = 127; // go down
-            re.yAxis = 0; 
-        } else if(frames == 7) {
-            re.xAxis = 230; //go right
-            re.yAxis = 127;
-        } else if(frames == 8) {
-            re.xAxis = 30; //go left
-            re.yAxis = 127;
+        if (frames >= 0 && frames < crouch) {
+            re.xAxis = 128; // go down
+            re.yAxis = 0;
+        } else if (frames >= crouch && frames < crouch+turn) {
+            re.xAxis = 128-40; //go left
+            re.yAxis = 128;
+        } else if (frames >= crouch+turn && frames < crouch+2*turn) {
+            re.xAxis = 128+40; //go right
+            re.yAxis = 128;
+        } else if (frames >= crouch+2*turn && frames < 2*crouch+2*turn) {
+            re.xAxis = 128; // go down
+            re.yAxis = 0;
+        } else if (frames >= 2*crouch+2*turn && frames < 2*crouch+3*turn) {
+            re.xAxis = 128+40; //go right
+            re.yAxis = 128;
+        } else if (frames >= 2*crouch+3*turn && frames < 2*crouch+4*turn) {
+            re.xAxis = 128-40; //go left
+            re.yAxis = 128;
+        } else {
+            re.xAxis = 128; // go down
+            re.yAxis = 0;
             frames = 0;
         }
+        
         console.write(re); 
-
+        controller.read();
         re = controller.getReport();
-        change_speed(re.x, re.y);
-        delay(step);
-    } while (!re.start);
+    } while (!re.a);
 
     digitalWrite(LED_BUILTIN, 0);
 }
@@ -115,14 +128,3 @@ void online_taunt()
 
     digitalWrite(LED_BUILTIN, 0);
 }
-
-
-
-
-
-void write_usb(Gamecube_Report_t *re)
-{
-    // abxys000 dLdRdDdUzrl1 jXjYcXcYlr
-    Serial.write((char*)re, 8);
-}
-
