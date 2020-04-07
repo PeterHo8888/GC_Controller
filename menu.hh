@@ -7,7 +7,7 @@ private:
     CGamecubeConsole *console;
     typedef void (*GC_func)(void);
 
-    GC_func map[sizeof(uint8_t)] = {nullptr};
+    GC_func map[256] = {nullptr};
 public:
     Menu(CGamecubeController *controller, CGamecubeConsole *c2);
     void set_item(uint8_t dpad, uint8_t button, GC_func f);
@@ -50,16 +50,18 @@ void Menu::loop()
 {
     uint8_t dpad, button;
     uint16_t command;
+    controller->read();
     Gamecube_Report_t re = controller->getReport();
 
-    dpad = re.dleft | re.dright | re.ddown | re.dup;
-    button = re.a | re.b | re.x | re.y;
+    dpad = re.dleft | re.dright<<1 | re.ddown<<2 | re.dup<<3;
+    button = re.a | re.b<<1 | re.x<<2 | re.y<<3;
 
     command = dpad << 4 | button;
 
     // Disable taunts, essentially
-    if (dpad == 0)
+    if (dpad == 0) {
         console->write(*controller);
+    }
     else if (map[command] != nullptr)
         map[command]();
 }
