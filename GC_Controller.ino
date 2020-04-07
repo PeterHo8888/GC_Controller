@@ -5,7 +5,7 @@ CGamecubeConsole console(8);
 CGamecubeController controller(7);
 Menu menu(&controller, &console);
 
-static const Gamecube_Report_t empty;
+static const Gamecube_Report_t empty = defaultGamecubeData.report;
 
 static int step = 16;
 
@@ -14,7 +14,8 @@ void setup()
     pinMode(LED_BUILTIN, OUTPUT);
 
     menu.set_item(Menu::dpad_up, Menu::A, mash);
-    menu.set_item(Menu::dpad_down, Menu::A, crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
+    menu.set_item(Menu::dpad_down, Menu::B,
+        crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
     menu.set_item(Menu::dpad_right, Menu::A, online_taunt);
     menu.set_item(Menu::dpad_left, Menu::A, SDI);
     menu.set_item(Menu::dpad_up, Menu::B, salty_rage_quit);
