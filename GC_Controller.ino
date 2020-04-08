@@ -162,21 +162,24 @@ void diddy_infinite()
     int frame = 0;
     int dir = 1;
     do {
+        /*
+        10 110 120 170 180
+        */
         re = empty;
-        if (frame < 10) {
+        if (frame < 10) {             // pluck banana
             re.b = 1;
             re.yAxis = 0;
             re.xAxis = 128 - 10*dir;
-        } else if (frame < 110) {
+        } else if (frame < 110) {     // jump
             re.y = 1;
             re.xAxis = 128 + 50*dir;
-        } else if (frame < 120) {
+        } else if (frame < 115) {     // grab
             re.z = 1;
             re.xAxis = 128 + 50*dir;
-        } else if (frame < 170) {
+        } else if (frame < 170) {     // throw down
             re.cyAxis = 0;
             re.xAxis = 128 + 50*dir;
-        } else if (frame < 180) {
+        } else if (frame < 180) {     // drop through
             re.yAxis = 0;
         } else {
             frame = 0;
