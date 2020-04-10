@@ -1,13 +1,21 @@
 #include "menu.hh"
 #include <Nintendo.h>
 
-CGamecubeConsole console(8);
+CGamecubeConsole console(6);
 CGamecubeController controller(7);
 Menu menu(&controller, &console);
 
 static const Gamecube_Report_t empty = defaultGamecubeData.report;
 
 static int step = 16;
+
+extern "C" {
+    void print(const char name[], uint8_t val) {
+        Serial.print(name);
+        Serial.print(": ");
+        Serial.println(val);
+    }
+}
 
 void setup()
 {
@@ -23,13 +31,10 @@ void setup()
 
     while (!Serial);
     Serial.begin(115200);
-    //while (Serial.read() == -1);
 
     while (!controller.read()) {
-        Serial.println("error reading controller.");
         delay(20);
     }
-    Serial.println("Starting");
 }
 
 void loop()
@@ -94,7 +99,7 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
             dir = -dir;
         }
         
-        console.write(re); 
+        console.write(re);
         controller.read();
         re = controller.getReport();
     } while (cancel(re));
@@ -132,25 +137,25 @@ void salty_rage_quit()
 {
     Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
-    re.start = 1;
-    console.write(re);
-    delay(step);
-    re = empty;
-    re.l = 1;
-    re.r = 1;
-    re.a = 1;
-    re.start = 1;
-    console.write(re);
-    delay(step);
-    re = empty;
-    re.xAxis = 255;
-    re.yAxis = 127;
-    console.write(re);
-    delay(step);
-    re = empty;
-    re.a = 1;
-    console.write(re);
-    delay(step);
+    int frame = 0;
+    do {
+        ++frame;
+        re = empty;
+        if (frame < 10) {
+            re.start = 1;
+        } else if (frame < 30) {
+            re.left = 255;
+            re.right = 255;
+            re.a = 1;
+            re.start = 1;
+        } else if (frame < 35) {
+            re.xAxis = 255;
+        } else if (frame < 1000) {
+            re.a = frame & 1;
+        }
+        console.write(re);
+    } while (frame < 1000);
+    
     digitalWrite(LED_BUILTIN, 0);
 }
 
@@ -190,6 +195,4 @@ void diddy_infinite()
         controller.read();
         re = controller.getReport();
     } while (cancel(re));
-        
-    
 }
