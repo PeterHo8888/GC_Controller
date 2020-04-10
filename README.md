@@ -9,8 +9,8 @@ A menu registration system is used for ease of programming and usage.  Normal op
 - Crouch Cancel Walk Cancel Turnaround Cancel Teabagging
 - Smokeless taunt
 - Diddy Infinite
+- Salty rage quit
 
 ## TODO
-- Salty rage quit (from [Insert Controller Here](https://www.youtube.com/channel/UC9bCMwS0VhmnVtQE_m92TSg))
 - Snake "There!" c4 with radio
 
