@@ -23,7 +23,7 @@ void setup()
     menu.set_item(Menu::dpad_left, Menu::B, mash);
     menu.set_item(Menu::dpad_down, Menu::B,
         crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
-    menu.set_item(Menu::dpad_up, Menu::B, online_taunt);
+    menu.set_item(Menu::dpad_up, Menu::B, smokeless_taunt);
     menu.set_item(Menu::dpad_right, Menu::B, salty_rage_quit);
 
     menu.set_item(Menu::dpad_down, Menu::A, diddy_infinite);
@@ -50,19 +50,21 @@ inline bool cancel(Gamecube_Report_t re)
 void mash()
 {
     Gamecube_Report_t re;
-    int x, y;
-    float deg = 0;
+    int frame = 0;
     digitalWrite(LED_BUILTIN, 1);
     do {
-        x = 127 * cos(deg) + 127;
-        y = 127 * sin(deg) + 127;
         re = empty;
-        re.xAxis = x;
-        re.yAxis = y;
+        if (frame < 2) {
+            re.xAxis = 255;
+            re.yAxis = 128;
+        }
+        else if (frame < 4) {
+            re.xAxis = 0;
+            re.yAxis = 128;
+        }
+        if (++frame == 4)
+            frame = 0;
         console.write(re);
-        deg += 90; // Quarter-circle every ~16 steps
-        if (deg > 360)
-            deg = 0;
         controller.read();
         re = controller.getReport();
     } while (cancel(re));
@@ -83,7 +85,7 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
         re = empty;
 
         ++frame;
-        if (frame >= 0 && frame < crouch) {
+        if (frame < crouch) {
             re.xAxis = 128; // go down
             re.yAxis = 0;
         } else if (frame < crouch+turn) {
@@ -107,7 +109,7 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
     digitalWrite(LED_BUILTIN, 0);
 }
 
-void online_taunt()
+void smokeless_taunt()
 {
     Gamecube_Report_t re;
     int frame = 0;
