@@ -9,7 +9,7 @@ private:
 
     GC_func map[256] = {nullptr};
 public:
-    Menu(CGamecubeController *controller, CGamecubeConsole *c2);
+    Menu(CGamecubeController *c, CGamecubeConsole *c2);
     void set_item(uint8_t dpad, uint8_t button, GC_func f);
     void loop();
 
