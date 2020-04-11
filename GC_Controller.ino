@@ -56,11 +56,9 @@ void mash()
         re = empty;
         if (frame < 2) {
             re.xAxis = 255;
-            re.yAxis = 128;
         }
         else if (frame < 4) {
             re.xAxis = 0;
-            re.yAxis = 128;
         }
         if (++frame == 4)
             frame = 0;
@@ -86,16 +84,12 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
 
         ++frame;
         if (frame < crouch) {
-            re.xAxis = 128; // go down
             re.yAxis = 0;
         } else if (frame < crouch+turn) {
-            re.xAxis = 128-40*dir; //go left
-            re.yAxis = 128;
+            re.xAxis = 128-40*dir;
         } else if (frame < crouch+2*turn) {
-            re.xAxis = 128+40*dir; //go right
-            re.yAxis = 128;
+            re.xAxis = 128+40*dir;
         } else {
-            re.xAxis = 128; // go down
             re.yAxis = 0;
             frame = 0;
             dir = -dir;
@@ -119,11 +113,9 @@ void smokeless_taunt()
         ++frame;
         if (frame < 6) {
             re.xAxis = 255;
-            re.yAxis = 128;
         }
         else if (frame < 10) {
             re.xAxis = 0;
-            re.yAxis = 128;
         } else {
             frame = 0;
         }
