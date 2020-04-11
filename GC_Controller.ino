@@ -7,7 +7,6 @@ Menu menu(&controller, &console);
 
 static const Gamecube_Report_t empty = defaultGamecubeData.report;
 
-static int step = 16;
 
 extern "C" {
     void print(const char name[], uint8_t val) {
@@ -26,8 +25,9 @@ void setup()
         crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch);
     menu.set_item(Menu::dpad_up, Menu::B, online_taunt);
     menu.set_item(Menu::dpad_right, Menu::B, salty_rage_quit);
-    
+
     menu.set_item(Menu::dpad_down, Menu::A, diddy_infinite);
+    menu.set_item(Menu::dpad_left, Menu::A, stutter_walk);
 
     while (!Serial);
     Serial.begin(115200);
@@ -75,13 +75,13 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
     Gamecube_Report_t re;
     int frame = 0;
     int dir = 1;
-    
+
     const int crouch = 15;
     const int turn = 3;
     digitalWrite(LED_BUILTIN, 1);
     do {
         re = empty;
-        
+
         ++frame;
         if (frame >= 0 && frame < crouch) {
             re.xAxis = 128; // go down
@@ -98,7 +98,7 @@ void crouch_cancelled_walk_cancelled_turnaround_cancelled_crouch()
             frame = 0;
             dir = -dir;
         }
-        
+
         console.write(re);
         controller.read();
         re = controller.getReport();
@@ -155,7 +155,7 @@ void salty_rage_quit()
         }
         console.write(re);
     } while (frame < 1000);
-    
+
     digitalWrite(LED_BUILTIN, 0);
 }
 
@@ -163,12 +163,12 @@ void diddy_infinite()
 {
     Gamecube_Report_t re;
     digitalWrite(LED_BUILTIN, 1);
-    
+
     int frame = 0;
     int dir = 1;
     do {
         /*
-        10 110 120 170 180
+        10 110 115 170 180
         */
         re = empty;
         if (frame < 10) {             // pluck banana
@@ -195,4 +195,30 @@ void diddy_infinite()
         controller.read();
         re = controller.getReport();
     } while (cancel(re));
+
+    digitalWrite(LED_BUILTIN, 0);
+}
+
+void stutter_walk()
+{
+    Gamecube_Report_t re;
+    digitalWrite(LED_BUILTIN, 1);
+
+    int frame = 0;
+    do {
+        re = empty;
+        ++frame;
+        if (frame < 8) {
+            re.xAxis = 128 + 30;
+        } else if (frame < 16) {
+            re.xAxis = 128;
+        } else {
+            frame = 0;
+        }
+        console.write(re);
+        controller.read();
+        re = controller.getReport();
+    } while (cancel(re));
+
+    digitalWrite(LED_BUILTIN, 0);
 }

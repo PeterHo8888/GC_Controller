@@ -10,6 +10,7 @@ A menu registration system is used for ease of programming and usage.  Normal op
 - Smokeless taunt
 - Diddy Infinite
 - Salty rage quit
+- Stutter Walk
 
 ## TODO
 - Snake "There!" c4 with radio
