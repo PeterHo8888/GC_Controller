@@ -1,3 +1,4 @@
+//#define VIEWER
 #include "menu.hh"
 #include <Nintendo.h>
 
@@ -6,7 +7,6 @@ CGamecubeController controller(7);
 Menu menu(&controller, &console);
 
 static const Gamecube_Report_t empty = defaultGamecubeData.report;
-
 
 extern "C" {
     void print(const char name[], uint8_t val) {
@@ -28,9 +28,11 @@ void setup()
 
     menu.set_item(Menu::dpad_down, Menu::A, diddy_infinite);
     menu.set_item(Menu::dpad_left, Menu::A, stutter_walk);
-
+    
+#ifdef VIEWER
     while (!Serial);
     Serial.begin(115200);
+#endif
 
     while (!controller.read()) {
         delay(20);
