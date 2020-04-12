@@ -150,7 +150,9 @@ void salty_rage_quit()
             re.a = frame & 1;
         }
         console.write(re);
-    } while (frame < 1000);
+        controller.read();
+        re = controller.getReport();
+    } while (cancel(re) && frame < 1000);
 
     digitalWrite(LED_BUILTIN, 0);
 }
