@@ -8,6 +8,8 @@ private:
     typedef void (*GC_func)(void);
 
     GC_func map[256] = {nullptr};
+    
+    bool enabled;
 public:
     Menu(CGamecubeController *c, CGamecubeConsole *c2);
     void set_item(uint8_t dpad, uint8_t button, GC_func f);
@@ -38,6 +40,7 @@ Menu::Menu(CGamecubeController *c, CGamecubeConsole *c2)
 {
     controller = c;
     console = c2;
+    enabled = false;
 }
 
 void Menu::set_item(uint8_t dpad, uint8_t button, GC_func f)
@@ -57,13 +60,19 @@ void Menu::loop()
     button = re.a | re.b<<1 | re.x<<2 | re.y<<3;
 
     command = dpad << 4 | button;
+    
+    if (!enabled)
+        enabled = re.ddown & re.l;
+    else
+        enabled = !(re.dleft & re.l);
 
     // Disable taunts, essentially
     // Prevents buffering of taunts
-    if (map[command] != nullptr) {
+    if (enabled && map[command] != nullptr) {
         map[command]();
     } else {
-        re.dleft = re.dright = re.ddown = re.dup = 0;
+        if (enabled)
+            re.dleft = re.dright = re.ddown = re.dup = 0;
         console->write(re);
     }
 }
